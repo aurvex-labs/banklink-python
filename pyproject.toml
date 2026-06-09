@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "banklink"
+version = "0.1.0"
+description = "Official BankLink SDK for Python"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+keywords = ["banklink", "open-banking", "south-africa", "fintech"]
+dependencies = ["httpx>=0.24"]
+
+[project.urls]
+Homepage = "https://banklink.co.za"
+Repository = "https://github.com/aurvex-labs/banklink-python"
+Documentation = "https://banklink.co.za/docs"
