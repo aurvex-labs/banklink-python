@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling<1.22"]
 build-backend = "hatchling.build"
 
 [project]
@@ -7,7 +7,7 @@ name = "banklink"
 version = "0.1.0"
 description = "Official BankLink SDK for Python"
 readme = "README.md"
-license = "MIT"
+license = {text = "MIT"}
 requires-python = ">=3.9"
 keywords = ["banklink", "open-banking", "south-africa", "fintech"]
 dependencies = ["httpx>=0.24"]
