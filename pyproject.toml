@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "banklink"
-version = "0.1.0"
-description = "Official BankLink SDK for Python"
+version = "0.2.0"
+description = "Official Banklink SDK for Python"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.9"

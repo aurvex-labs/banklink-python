@@ -5,15 +5,16 @@ from typing import Any, Dict, Optional
 import httpx
 
 from .errors import (
+    OrgNotVerifiedError,
     AuthenticationError,
-    BankLinkError,
+    BanklinkError,
     InsufficientCreditsError,
     NotFoundError,
     RateLimitError,
 )
 
 _DEFAULT_BASE_URL = "https://api.banklink.co.za/v1"
-_USER_AGENT = "banklink-python/0.1.0"
+_USER_AGENT = "banklink-python/0.2.0"
 
 _ERROR_MAP = {
     401: AuthenticationError,
@@ -29,18 +30,26 @@ def _raise_for_status(response: httpx.Response) -> None:
     status = response.status_code
     try:
         payload = response.json()
-        code = payload.get("code", "unknown_error")
-        message = payload.get("message", response.text)
+        # v1 errors are {"error": {"code", "message"}}; tolerate {"error": "..."} too.
+        error = payload.get("error")
+        if isinstance(error, dict):
+            code = error.get("code", "unknown_error")
+            message = error.get("message", response.text)
+        else:
+            code = payload.get("code", "unknown_error")
+            message = error if isinstance(error, str) else payload.get("message", response.text)
     except Exception:
         code = "unknown_error"
         message = response.text
 
-    exc_class = _ERROR_MAP.get(status, BankLinkError)
+    if code == "org_not_verified":
+        raise OrgNotVerifiedError(status, code, message)
+    exc_class = _ERROR_MAP.get(status, BanklinkError)
     raise exc_class(status, code, message)
 
 
 class SyncClient:
-    """Synchronous HTTP client for the BankLink API."""
+    """Synchronous HTTP client for the Banklink API."""
 
     def __init__(
         self,
@@ -80,7 +89,7 @@ class SyncClient:
 
 
 class AsyncClient:
-    """Asynchronous HTTP client for the BankLink API."""
+    """Asynchronous HTTP client for the Banklink API."""
 
     def __init__(
         self,
